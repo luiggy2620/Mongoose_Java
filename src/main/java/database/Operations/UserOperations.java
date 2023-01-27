@@ -4,8 +4,10 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Updates;
 import database.CRUD.Get;
 import database.CRUD.Post;
+import database.CRUD.Put;
 import model.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -13,7 +15,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
-public class UserOperations extends Operations implements Get, Post {
+public class UserOperations extends Operations implements Get, Post, Put {
 
     private MongoCursor<Document> users;
     private Document user;
@@ -166,5 +168,37 @@ public class UserOperations extends Operations implements Get, Post {
         } catch (MongoException exception) {
             System.out.println(exception);
         }
+    }
+
+    @Override
+    public void findByAndUpdateMany(String key, Object value, Bson schema) {
+        try {
+            Bson filter = new Document(key, value);
+            Bson updates = Updates.combine(new Document("$set", schema));
+            getUsersCollection().updateOne(filter, updates);
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+    }
+
+    @Override
+    public void findByIdAndUpdateMany(String id, Bson schema) {
+        findByAndUpdateMany("_id", new ObjectId(id), schema);
+    }
+
+    @Override
+    public void findByAndUpdateOne(String key, Object value, String keyToUpdate, Object valueToUpdate) {
+        try {
+            Bson filter = new Document(key, value);
+            Bson updates = Updates.combine(Updates.set(keyToUpdate, valueToUpdate));
+            getUsersCollection().updateOne(filter, updates);
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+    }
+
+    @Override
+    public void findByIdAndUpdateOne(String id, String keyToUpdate, Object valueToUpdate) {
+        findByAndUpdateOne("_id", new ObjectId(id), keyToUpdate, valueToUpdate);
     }
 }
