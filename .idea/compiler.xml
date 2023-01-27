@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Mongoose" />
+        <module name="Mongoose_Java" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Mongoose" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -2,20 +2,30 @@ package database.Operations;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import database.CRUD.Get;
 import database.CRUD.Post;
 import model.User;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
 public class UserOperations extends Operations implements Get, Post {
 
+    private MongoCursor<Document> users;
+    private Document user;
     public static UserOperations userOperations;
 
+    public UserOperations() {
+        this.users = null;
+        this.user = null;
+    }
+
     public static UserOperations getUserOperations() {
-        if(userOperations == null)
+        if (userOperations == null)
             userOperations = new UserOperations();
         return userOperations;
     }
@@ -30,37 +40,110 @@ public class UserOperations extends Operations implements Get, Post {
                 .append("posts", user.getPosts());
     }
 
+    private Document getProjection(boolean isVisible, String... keys) {
+        int visible = 0;
+        if (isVisible) visible = 1;
+        Document projection = new Document();
+        for (String key : keys)
+            projection.append(key, visible);
+        return projection;
+    }
+
     @Override
     public MongoCursor<Document> find() {
-        return getUsersCollection().find().iterator();
+        try {
+            users = getUsersCollection().find().iterator();
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+        return users;
     }
 
     @Override
     public MongoCursor<Document> findAllExcept(String... keys) {
-        Document projection = new Document();
-        for (String key : keys)
-            projection.append(key, 0);
-        return getUsersCollection().find().projection(projection).iterator();
+        try {
+            Document projection = getProjection(false, keys);
+            users = getUsersCollection().find().projection(projection).iterator();
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+        return users;
     }
 
     @Override
     public MongoCursor<Document> findJust(String... keys) {
-        return null;
+        try {
+            Document projection = getProjection(true, keys);
+            users = getUsersCollection().find().projection(projection).iterator();
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+        return users;
     }
 
     @Override
-    public MongoCursor<Document> findAndSorter(String key, Object value) {
-        return null;
+    public MongoCursor<Document> findAndSorter(String key, boolean isAscending) {
+        try {
+            Bson sortType = Sorts.ascending(key);
+            if(!isAscending) sortType = Sorts.descending(key);
+            users = getUsersCollection().find().sort(sortType).iterator();
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+        return users;
     }
 
     @Override
-    public Document findBy(String key, Object value) {
-        return null;
+    public MongoCursor<Document> findBy(String key, Object value) {
+        try {
+            Bson filter = Filters.eq(key, value);
+            users = getUsersCollection().find(filter).iterator();
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+        return users;
+    }
+
+    private MongoCursor<Document> findByFilterAndProjection(
+            String key,
+            Object value,
+            boolean isVisible,
+            String ...keys
+    ) {
+        try {
+            Document projection = getProjection(isVisible, keys);
+            Bson filter = Filters.eq(key, value);
+            users = getUsersCollection().find(filter).projection(projection).iterator();
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+        return users;
     }
 
     @Override
-    public Document findById(String id) {
-        return null;
+    public MongoCursor<Document> findByJust(String key, Object value, String... keys) {
+        return findByFilterAndProjection(key, value, true, keys);
+    }
+
+    @Override
+    public MongoCursor<Document> findByAllExcept(String key, Object value, String ...keys) {
+        return findByFilterAndProjection(key, value, false, keys);
+    }
+
+    @Override
+    public Document findOneBy(String key, Object value) {
+        try {
+            Bson filter = new Document(key, value);
+            user = getUsersCollection().find(filter).first();
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+        return user;
+    }
+
+    @Override
+    public Document findOneById(String id) {
+        return findOneBy("_id", new ObjectId(id));
     }
 
     @Override
