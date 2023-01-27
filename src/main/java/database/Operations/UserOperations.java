@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
+import database.CRUD.Delete;
 import database.CRUD.Get;
 import database.CRUD.Post;
 import database.CRUD.Put;
@@ -15,7 +16,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
-public class UserOperations extends Operations implements Get, Post, Put {
+public class UserOperations extends Operations implements Get, Post, Put, Delete {
 
     private MongoCursor<Document> users;
     private Document user;
@@ -200,5 +201,20 @@ public class UserOperations extends Operations implements Get, Post, Put {
     @Override
     public void findByIdAndUpdateOne(String id, String keyToUpdate, Object valueToUpdate) {
         findByAndUpdateOne("_id", new ObjectId(id), keyToUpdate, valueToUpdate);
+    }
+
+    @Override
+    public void findByAndDelete(String key, Object value) {
+        try {
+            Bson filter = Filters.eq(key, value);
+            getUsersCollection().deleteOne(filter);
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+    }
+
+    @Override
+    public void findByIdAndDelete(String id) {
+        findByAndDelete("_id", new ObjectId(id));
     }
 }
