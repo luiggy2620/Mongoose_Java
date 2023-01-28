@@ -10,11 +10,11 @@ public class Post {
     private int likes;
     private String idUser;
 
-    public Post(String title, String description, Date dateCreated, String idUser) {
+    public Post(String title, String description, String idUser) {
         this.title = title;
         this.description = description;
-        this.dateCreated = dateCreated;
         this.idUser = idUser;
+        this.dateCreated = new Date();
         this.likes = 0;
     }
 

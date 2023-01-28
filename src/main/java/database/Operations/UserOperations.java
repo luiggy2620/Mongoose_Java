@@ -5,10 +5,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
-import database.CRUD.Delete;
-import database.CRUD.Get;
-import database.CRUD.Post;
-import database.CRUD.Put;
+import database.CRUD.*;
 import model.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -144,7 +141,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     @Override
     public void insertOne(Object object) {
         try {
-            User userToSave = (User) object;
+            Document userToSave = getSchema(object);
             getUsersCollection().insertOne(getSchema(userToSave));
         } catch (MongoException exception) {
             System.out.println(exception);
@@ -156,7 +153,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
         try {
             ArrayList<Document> usersSchema = new ArrayList<>();
             for (Object object : objects)
-                usersSchema.add(getSchema((User) object));
+                usersSchema.add(getSchema(object));
             getUsersCollection().insertMany(usersSchema);
         } catch (MongoException exception) {
             System.out.println(exception);

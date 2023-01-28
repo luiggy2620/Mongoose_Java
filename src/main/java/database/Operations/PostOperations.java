@@ -4,13 +4,15 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
-import database.CRUD.Get;
+import database.CRUD.*;
 import model.Post;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
-public class PostOperations extends Operations implements Get {
+import java.util.ArrayList;
+
+public class PostOperations extends Operations implements Get, database.CRUD.Post {
 
     private Document post;
     private MongoCursor<Document> posts;
@@ -131,5 +133,27 @@ public class PostOperations extends Operations implements Get {
     @Override
     public Document findOneById(String id) {
         return findOneBy("_id", new ObjectId(id));
+    }
+
+    @Override
+    public void insertOne(Object object) {
+        try {
+            Document postToSave = getSchema(object);
+            getPostCollection().insertOne(getSchema(postToSave));
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+    }
+
+    @Override
+    public void insertMany(Object... objects) {
+        try {
+            ArrayList<Document> postsToSave = new ArrayList<>();
+            for (Object post : objects)
+                postsToSave.add(getSchema(post));
+            getPostCollection().insertMany(postsToSave);
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
     }
 }
