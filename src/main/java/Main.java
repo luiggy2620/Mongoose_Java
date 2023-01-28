@@ -1,12 +1,17 @@
-import database.Operations.UserOperations;
+import database.Operations.PostOperations;
 import org.bson.Document;
 
 public class Main {
     public static void main(String[] args) {
 
-        UserOperations userOperations = UserOperations.getUserOperations();
 
-        userOperations.findByIdAndDelete("63d0502545b1570f993c1e2e");
+        PostOperations postOperations = PostOperations.getPostOperations();
+        postOperations.findByAndUpdateMany("title", "post 2",
+                new Document()
+                        .append("title", "post 2 updated")
+                        .append("description", "some description updated")
+        );
+
 
     }
 }

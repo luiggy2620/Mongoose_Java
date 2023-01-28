@@ -142,7 +142,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     public void insertOne(Object object) {
         try {
             Document userToSave = getSchema(object);
-            getUsersCollection().insertOne(getSchema(userToSave));
+            getUsersCollection().insertOne(userToSave);
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -163,7 +163,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     @Override
     public void findByAndUpdateMany(String key, Object value, Bson schema) {
         try {
-            Bson filter = new Document(key, value);
+            Bson filter = Filters.eq(key, value);
             Bson updates = Updates.combine(new Document("$set", schema));
             getUsersCollection().updateOne(filter, updates);
         } catch (MongoException exception) {
@@ -179,7 +179,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     @Override
     public void findByAndUpdateOne(String key, Object value, String keyToUpdate, Object valueToUpdate) {
         try {
-            Bson filter = new Document(key, value);
+            Bson filter = Filters.eq(key, value);
             Bson updates = Updates.combine(Updates.set(keyToUpdate, valueToUpdate));
             getUsersCollection().updateOne(filter, updates);
         } catch (MongoException exception) {

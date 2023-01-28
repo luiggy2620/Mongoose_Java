@@ -10,7 +10,7 @@ public abstract class Operations {
 
     protected MongoDatabase database;
     protected MongoCollection<Document> usersCollection;
-    protected MongoCollection<Document> postCollection;
+    protected MongoCollection<Document> postsCollection;
     protected MongoClient connection;
 
     protected MongoClient getConnection() {
@@ -31,10 +31,10 @@ public abstract class Operations {
         return usersCollection;
     }
 
-    protected MongoCollection<Document> getPostCollection() {
-        if(postCollection == null)
-            getDatabase().getCollection("posts");
-        return postCollection;
+    protected MongoCollection<Document> getPostsCollection() {
+        if(postsCollection == null)
+            postsCollection = getDatabase().getCollection("posts");
+        return postsCollection;
     }
 
     protected Document getProjection(boolean isVisible, String... keys) {

@@ -4,6 +4,7 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Updates;
 import database.CRUD.*;
 import model.Post;
 import org.bson.Document;
@@ -12,7 +13,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
-public class PostOperations extends Operations implements Get, database.CRUD.Post {
+public class PostOperations extends Operations implements Get, database.CRUD.Post, Put {
 
     private Document post;
     private MongoCursor<Document> posts;
@@ -43,7 +44,7 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     @Override
     public MongoCursor<Document> find() {
         try {
-            posts = getPostCollection().find().iterator();
+            posts = getPostsCollection().find().iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -54,7 +55,7 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     public MongoCursor<Document> findBy(String key, Object value) {
         try {
             Bson filter = Filters.eq(key, value);
-            posts = getPostCollection().find(filter).iterator();
+            posts = getPostsCollection().find(filter).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -70,7 +71,7 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
         try {
             Bson filter = Filters.eq(key, value);
             Document projection = getProjection(isVisible, keys);
-            posts = getPostCollection().find(filter).projection(projection).iterator();
+            posts = getPostsCollection().find(filter).projection(projection).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -90,7 +91,7 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     private MongoCursor<Document> findByProjection(boolean isVisible, String ...keys) {
         try {
             Document projection = getProjection(isVisible, keys);
-            posts = getPostCollection().find().projection(projection).iterator();
+            posts = getPostsCollection().find().projection(projection).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -112,7 +113,7 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
         try {
             Bson sorter = Sorts.descending(key);
             if (isAscending) sorter = Sorts.ascending(key);
-            posts = getPostCollection().find().sort(sorter).iterator();
+            posts = getPostsCollection().find().sort(sorter).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -123,7 +124,7 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     public Document findOneBy(String key, Object value) {
         try {
             Bson filter = Filters.eq(key, value);
-            post = getPostCollection().find(filter).first();
+            post = getPostsCollection().find(filter).first();
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -139,7 +140,7 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     public void insertOne(Object object) {
         try {
             Document postToSave = getSchema(object);
-            getPostCollection().insertOne(getSchema(postToSave));
+            getPostsCollection().insertOne(postToSave);
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -151,9 +152,41 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
             ArrayList<Document> postsToSave = new ArrayList<>();
             for (Object post : objects)
                 postsToSave.add(getSchema(post));
-            getPostCollection().insertMany(postsToSave);
+            getPostsCollection().insertMany(postsToSave);
         } catch (MongoException exception) {
             System.out.println(exception);
         }
+    }
+
+    @Override
+    public void findByAndUpdateMany(String key, Object value, Bson schema) {
+        try {
+            Bson filter = Filters.eq(key, value);
+            Bson updates = Updates.combine(new Document("$set", schema));
+            getPostsCollection().updateOne(filter, updates);
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+    }
+
+    @Override
+    public void findByIdAndUpdateMany(String id, Bson schema) {
+        findByAndUpdateMany("_id", new ObjectId(id), schema);
+    }
+
+    @Override
+    public void findByAndUpdateOne(String key, Object value, String keyToUpdate, Object valueToUpdate) {
+        try {
+            Bson filter = Filters.eq(key, value);
+            Bson toUpdate = Updates.combine(Updates.set(keyToUpdate, valueToUpdate));
+            getPostsCollection().updateOne(filter, toUpdate);
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+    }
+
+    @Override
+    public void findByIdAndUpdateOne(String id, String keyToUpdate, Object valueToUpdate) {
+        findByAndUpdateOne("_id", id, keyToUpdate, valueToUpdate);
     }
 }
