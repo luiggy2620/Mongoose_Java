@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 
-public class PostOperations extends Operations implements Get, database.CRUD.Post, Put {
+public class PostOperations extends Operations implements Get, database.CRUD.Post, Put, Delete {
 
     private Document post;
     private MongoCursor<Document> posts;
@@ -188,5 +188,20 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     @Override
     public void findByIdAndUpdateOne(String id, String keyToUpdate, Object valueToUpdate) {
         findByAndUpdateOne("_id", id, keyToUpdate, valueToUpdate);
+    }
+
+    @Override
+    public void findByAndDelete(String key, Object value) {
+        try {
+            Bson filter = Filters.eq(key, value);
+            getPostsCollection().deleteOne(filter);
+        } catch (MongoException exception) {
+            System.out.println(exception);
+        }
+    }
+
+    @Override
+    public void findByIdAndDelete(String id) {
+        findByAndDelete("_id", new ObjectId(id));
     }
 }

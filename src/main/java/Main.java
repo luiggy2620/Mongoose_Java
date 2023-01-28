@@ -6,12 +6,7 @@ public class Main {
 
 
         PostOperations postOperations = PostOperations.getPostOperations();
-        postOperations.findByAndUpdateMany("title", "post 2",
-                new Document()
-                        .append("title", "post 2 updated")
-                        .append("description", "some description updated")
-        );
-
+        postOperations.findByAndDelete("title", "post 3");
 
     }
 }
