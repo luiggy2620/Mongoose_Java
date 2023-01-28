@@ -24,4 +24,5 @@ public interface Get {
     public Document findOneBy(String key, Object value);
 
     public Document findOneById(String id);
+
 }

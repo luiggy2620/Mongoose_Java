@@ -6,10 +6,11 @@ import com.mongodb.client.MongoDatabase;
 import database.Connection;
 import org.bson.Document;
 
-public class Operations {
+public abstract class Operations {
 
     protected MongoDatabase database;
     protected MongoCollection<Document> usersCollection;
+    protected MongoCollection<Document> postCollection;
     protected MongoClient connection;
 
     protected MongoClient getConnection() {
@@ -29,4 +30,21 @@ public class Operations {
             usersCollection = getDatabase().getCollection("users");
         return usersCollection;
     }
+
+    protected MongoCollection<Document> getPostCollection() {
+        if(postCollection == null)
+            getDatabase().getCollection("posts");
+        return postCollection;
+    }
+
+    protected Document getProjection(boolean isVisible, String... keys) {
+        int visibility = 0;
+        if (isVisible) visibility = 1;
+        Document projection = new Document();
+        for (String key : keys)
+            projection.append(key, visibility);
+        return projection;
+    }
+
+    protected abstract Document getSchema(Object object);
 }

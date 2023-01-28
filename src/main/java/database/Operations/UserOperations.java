@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 public class UserOperations extends Operations implements Get, Post, Put, Delete {
 
-    private MongoCursor<Document> users;
     private Document user;
+    private MongoCursor<Document> users;
     public static UserOperations userOperations;
 
     public UserOperations() {
@@ -33,7 +33,10 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
         return userOperations;
     }
 
-    private Document getUserSchema(User user) {
+
+    @Override
+    protected Document getSchema(Object object) {
+        User user = (User) object;
         return new Document("_id", new ObjectId())
                 .append("name", user.getName())
                 .append("userName", user.getUserName())
@@ -41,15 +44,6 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
                 .append("password", user.getPassword())
                 .append("isPublic", user.isPublic())
                 .append("posts", user.getPosts());
-    }
-
-    private Document getProjection(boolean isVisible, String... keys) {
-        int visible = 0;
-        if (isVisible) visible = 1;
-        Document projection = new Document();
-        for (String key : keys)
-            projection.append(key, visible);
-        return projection;
     }
 
     @Override
@@ -62,10 +56,9 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
         return users;
     }
 
-    @Override
-    public MongoCursor<Document> findAllExcept(String... keys) {
+    private MongoCursor<Document> findByProjection(boolean isVisible, String ...keys) {
         try {
-            Document projection = getProjection(false, keys);
+            Document projection = getProjection(isVisible, keys);
             users = getUsersCollection().find().projection(projection).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
@@ -74,22 +67,21 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     }
 
     @Override
+    public MongoCursor<Document> findAllExcept(String... keys) {
+        return findByProjection(false, keys);
+    }
+
+    @Override
     public MongoCursor<Document> findJust(String... keys) {
-        try {
-            Document projection = getProjection(true, keys);
-            users = getUsersCollection().find().projection(projection).iterator();
-        } catch (MongoException exception) {
-            System.out.println(exception);
-        }
-        return users;
+        return findByProjection(true, keys);
     }
 
     @Override
     public MongoCursor<Document> findAndSorter(String key, boolean isAscending) {
         try {
-            Bson sortType = Sorts.ascending(key);
-            if(!isAscending) sortType = Sorts.descending(key);
-            users = getUsersCollection().find().sort(sortType).iterator();
+            Bson sorter = Sorts.descending(key);
+            if(isAscending) sorter = Sorts.ascending(key);
+            users = getUsersCollection().find().sort(sorter).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -153,7 +145,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     public void insertOne(Object object) {
         try {
             User userToSave = (User) object;
-            getUsersCollection().insertOne(getUserSchema(userToSave));
+            getUsersCollection().insertOne(getSchema(userToSave));
         } catch (MongoException exception) {
             System.out.println(exception);
         }
@@ -164,7 +156,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
         try {
             ArrayList<Document> usersSchema = new ArrayList<>();
             for (Object object : objects)
-                usersSchema.add(getUserSchema((User) object));
+                usersSchema.add(getSchema((User) object));
             getUsersCollection().insertMany(usersSchema);
         } catch (MongoException exception) {
             System.out.println(exception);
@@ -217,4 +209,5 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     public void findByIdAndDelete(String id) {
         findByAndDelete("_id", new ObjectId(id));
     }
+
 }
