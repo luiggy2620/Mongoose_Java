@@ -3,25 +3,23 @@ package database.CRUD;
 import com.mongodb.client.MongoCursor;
 import org.bson.Document;
 
-import java.util.concurrent.CompletableFuture;
-
 public interface Get {
 
-    public MongoCursor<Document> find();
+    public MongoCursor<Document> findAll();
 
-    public MongoCursor<Document> findBy(String key, Object value);
+    public MongoCursor<Document> findBy(Object key, Object value);
 
-    public MongoCursor<Document> findByAllExcept(String key, Object value, String ...keys);
+    public MongoCursor<Document> findByExcept(Object key, Object value, Object ...keys);
 
-    public MongoCursor<Document> findByJust(String key, Object value, String ...keys);
+    public MongoCursor<Document> findByJust(Object key, Object value, Object ...keys);
 
-    public MongoCursor<Document> findAllExcept(String ...keys);
+    public MongoCursor<Document> findAllJust(Object ...keys);
 
-    public MongoCursor<Document> findJust(String ...keys);
+    MongoCursor<Document> findAllExcept(Object... keys);
 
-    public MongoCursor<Document> findAndSorter(String key, boolean isAscending);
+    public MongoCursor<Document> findAllAndSorter(Object key, boolean isAscending);
 
-    public Document findOneBy(String key, Object value);
+    public Document findOneBy(Object key, Object value);
 
     public Document findOneById(String id);
 

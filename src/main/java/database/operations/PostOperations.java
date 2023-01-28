@@ -1,4 +1,4 @@
-package database.Operations;
+package database.operations;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCursor;
@@ -6,6 +6,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import database.CRUD.*;
+import database.schemaKeys.PostKeys;
+import database.schemaKeys.UserKeys;
 import model.Post;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -41,8 +43,24 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
                 .append("idUser", post.getIdUser());
     }
 
+    private String[] getKeysString(Object ...keys) {
+        String[] keysString = new String[keys.length];
+        int i = 0;
+
+        for (Object key : keys) {
+            keysString[i] = ((PostKeys) key).getText();
+            i++;
+        }
+
+        return keysString;
+    }
+
+    private String getKeyText(Object key) {
+        return ((PostKeys) key).getText();
+    }
+
     @Override
-    public MongoCursor<Document> find() {
+    public MongoCursor<Document> findAll() {
         try {
             posts = getPostsCollection().find().iterator();
         } catch (MongoException exception) {
@@ -52,9 +70,9 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     }
 
     @Override
-    public MongoCursor<Document> findBy(String key, Object value) {
+    public MongoCursor<Document> findBy(Object key, Object value) {
         try {
-            Bson filter = Filters.eq(key, value);
+            Bson filter = Filters.eq(getKeyText(key), value);
             posts = getPostsCollection().find(filter).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
@@ -79,13 +97,15 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     }
 
     @Override
-    public MongoCursor<Document> findByAllExcept(String key, Object value, String... keys) {
-        return findByFilterAndProjection(key, value, false, keys);
+    public MongoCursor<Document> findByExcept(Object key, Object value, Object... keys) {
+        return findByFilterAndProjection(getKeyText(key), value,
+                false, getKeysString(keys));
     }
 
     @Override
-    public MongoCursor<Document> findByJust(String key, Object value, String... keys) {
-        return findByFilterAndProjection(key, value, true, keys);
+    public MongoCursor<Document> findByJust(Object key, Object value, Object... keys) {
+        return findByFilterAndProjection(getKeyText(key), value,
+                true, getKeysString(keys));
     }
 
     private MongoCursor<Document> findByProjection(boolean isVisible, String ...keys) {
@@ -99,20 +119,21 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     }
 
     @Override
-    public MongoCursor<Document> findAllExcept(String... keys) {
-        return findByProjection(false, keys);
+    public MongoCursor<Document> findAllExcept(Object... keys) {
+        return findByProjection(false, getKeysString(keys));
     }
 
     @Override
-    public MongoCursor<Document> findJust(String... keys) {
-        return findByProjection(true, keys);
+    public MongoCursor<Document> findAllJust(Object... keys) {
+        return findByProjection(true, getKeysString(keys));
     }
 
     @Override
-    public MongoCursor<Document> findAndSorter(String key, boolean isAscending) {
+    public MongoCursor<Document> findAllAndSorter(Object key, boolean isAscending) {
         try {
-            Bson sorter = Sorts.descending(key);
-            if (isAscending) sorter = Sorts.ascending(key);
+            String keyText = getKeyText(key);
+            Bson sorter = Sorts.descending(keyText);
+            if (isAscending) sorter = Sorts.ascending(keyText);
             posts = getPostsCollection().find().sort(sorter).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
@@ -121,9 +142,9 @@ public class PostOperations extends Operations implements Get, database.CRUD.Pos
     }
 
     @Override
-    public Document findOneBy(String key, Object value) {
+    public Document findOneBy(Object key, Object value) {
         try {
-            Bson filter = Filters.eq(key, value);
+            Bson filter = Filters.eq(getKeyText(key), value);
             post = getPostsCollection().find(filter).first();
         } catch (MongoException exception) {
             System.out.println(exception);

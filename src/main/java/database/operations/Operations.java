@@ -1,4 +1,4 @@
-package database.Operations;
+package database.operations;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;

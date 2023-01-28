@@ -1,4 +1,4 @@
-package database.Operations;
+package database.operations;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCursor;
@@ -6,6 +6,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import database.CRUD.*;
+import database.schemaKeys.UserKeys;
 import model.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -44,7 +45,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     }
 
     @Override
-    public MongoCursor<Document> find() {
+    public MongoCursor<Document> findAll() {
         try {
             users = getUsersCollection().find().iterator();
         } catch (MongoException exception) {
@@ -63,21 +64,37 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
         return users;
     }
 
-    @Override
-    public MongoCursor<Document> findAllExcept(String... keys) {
-        return findByProjection(false, keys);
+    private String[] getKeysString(Object ...keys) {
+        String[] keysString = new String[keys.length];
+        int i = 0;
+
+        for (Object key : keys) {
+            keysString[i] = ((UserKeys)key).getText();
+            i++;
+        }
+
+        return keysString;
+    }
+
+    private String getKeyText(Object key) {
+        return ((UserKeys) key).getText();
     }
 
     @Override
-    public MongoCursor<Document> findJust(String... keys) {
-        return findByProjection(true, keys);
+    public MongoCursor<Document> findAllExcept(Object... keys) {
+        return findByProjection(false, getKeysString(keys));
     }
 
     @Override
-    public MongoCursor<Document> findAndSorter(String key, boolean isAscending) {
+    public MongoCursor<Document> findAllJust(Object... keys) {
+        return findByProjection(true, getKeysString(keys));
+    }
+
+    @Override
+    public MongoCursor<Document> findAllAndSorter(Object key, boolean isAscending) {
         try {
-            Bson sorter = Sorts.descending(key);
-            if(isAscending) sorter = Sorts.ascending(key);
+            Bson sorter = Sorts.descending(getKeyText(key));
+            if(isAscending) sorter = Sorts.ascending(getKeyText(key));
             users = getUsersCollection().find().sort(sorter).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
@@ -86,9 +103,9 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     }
 
     @Override
-    public MongoCursor<Document> findBy(String key, Object value) {
+    public MongoCursor<Document> findBy(Object key, Object value) {
         try {
-            Bson filter = Filters.eq(key, value);
+            Bson filter = Filters.eq(getKeyText(key), value);
             users = getUsersCollection().find(filter).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
@@ -113,19 +130,21 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     }
 
     @Override
-    public MongoCursor<Document> findByJust(String key, Object value, String... keys) {
-        return findByFilterAndProjection(key, value, true, keys);
+    public MongoCursor<Document> findByJust(Object key, Object value, Object... keys) {
+        return findByFilterAndProjection(getKeyText(key), value,
+                true, getKeysString(keys));
     }
 
     @Override
-    public MongoCursor<Document> findByAllExcept(String key, Object value, String ...keys) {
-        return findByFilterAndProjection(key, value, false, keys);
+    public MongoCursor<Document> findByExcept(Object key, Object value, Object ...keys) {
+        return findByFilterAndProjection(getKeyText(key), value,
+                false, getKeysString(keys));
     }
 
     @Override
-    public Document findOneBy(String key, Object value) {
+    public Document findOneBy(Object key, Object value) {
         try {
-            Bson filter = new Document(key, value);
+            Bson filter = new Document(getKeyText(key), value);
             user = getUsersCollection().find(filter).first();
         } catch (MongoException exception) {
             System.out.println(exception);
@@ -135,7 +154,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
 
     @Override
     public Document findOneById(String id) {
-        return findOneBy("_id", new ObjectId(id));
+        return findOneBy(UserKeys.ID, new ObjectId(id));
     }
 
     @Override
