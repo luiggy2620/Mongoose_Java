@@ -9,4 +9,6 @@ module com.example.mongoose_java {
 
     opens com.example.mongoose_java to javafx.fxml;
     exports com.example.mongoose_java;
+    exports com.example.mongoose_java.controller;
+    opens com.example.mongoose_java.controller to javafx.fxml;
 }

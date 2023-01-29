@@ -1,0 +1,12 @@
+.postContainer {
+    -fx-border-radius: 15px;
+    -fx-box-shadow: 10px 10px 20px #DDD;
+}
+
+.postContainer:hover {
+    -fx-background-color: lightblue;
+}
+
+.child {
+    -fx-background-color: transparent;
+}

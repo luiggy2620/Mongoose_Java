@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox
+        fx:id="mainContainer"
+        stylesheets="@index.css"
+
+        alignment="CENTER"
+        prefHeight="700.0"
+        prefWidth="1000.0"
+        padding="20"
+        spacing="20"
+
+        xmlns:fx="http://javafx.com/fxml/1"
+        xmlns="http://javafx.com/javafx/19"
+        fx:controller="com.example.mongoose_java.controller.Index"
+>
+
+</VBox>
