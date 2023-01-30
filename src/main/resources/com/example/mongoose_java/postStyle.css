@@ -1,12 +1,44 @@
+#postsContainer {
+    -fx-alignment: CENTER;
+    -fx-padding: 50;
+}
+
 .postContainer {
+    -fx-padding: 20;
+    -fx-spacing: 5;
     -fx-border-radius: 15px;
-    -fx-box-shadow: 10px 10px 20px #DDD;
+    -fx-background-radius: 15px;
+
+    -fx-alignment: CENTER_LEFT;
+    -fx-effect: dropshadow(three-pass-box, #DDD, 20, 0, 3, 3);
 }
 
 .postContainer:hover {
-    -fx-background-color: lightblue;
+    -fx-background-color: #FCFFE7;
 }
 
 .child {
     -fx-background-color: transparent;
+}
+
+.userContainer {
+    -fx-cursor: HAND;
+}
+
+.userName, .likes {
+    -fx-font-size: 14px;
+    -fx-font-weight: BOLD;
+}
+
+.description {
+    -fx-font-size: 14px;
+}
+
+.dateCreated {
+    -fx-font-size: 10px;
+}
+
+.likeButton {
+    -fx-border-color: none;
+    -fx-cursor: HAND;
 }

@@ -6,3 +6,7 @@
     -fx-font-family: 'Nunito', sans-serif;
     -fx-font-weight: 200;
 }
+
+.scrollBar:vertical {
+    -fx-background-color: red !important;
+}

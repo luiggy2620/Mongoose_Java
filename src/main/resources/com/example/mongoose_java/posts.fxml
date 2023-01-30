@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane fx:id="mainContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mongoose_java.controller.PostsController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
+    <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+
+   <children>
+      <VBox fx:id="menuContainer" prefHeight="200.0" prefWidth="100.0" />
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" styleClass="scrollBar">
+         <content>
+            <FlowPane fx:id="postsContainer" prefHeight="100.0" prefWidth="798.0" hgap="30" vgap="30"/>
+         </content>
+      </ScrollPane>
+   </children>
+   <stylesheets>
+      <URL value="@index.css" />
+       <URL value="@postStyle.css" />
+       <URL value="@menu.css" />
+   </stylesheets>
+
+</GridPane>
