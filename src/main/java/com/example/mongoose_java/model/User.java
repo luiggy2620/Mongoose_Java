@@ -10,6 +10,8 @@ public class User {
     private String password;
     private Boolean isPublic;
     private ArrayList<String> posts;
+    private ArrayList<String> followers;
+    private ArrayList<String> following;
 
     public User(String name, String userName, String email, String password) {
         this.name = name;
@@ -18,6 +20,8 @@ public class User {
         this.password = password;
         this.isPublic = true;
         posts = new ArrayList<>();
+        followers = new ArrayList<>();
+        following = new ArrayList<>();
     }
 
     public String getName() {
@@ -66,5 +70,21 @@ public class User {
 
     public void setPosts(ArrayList<String> posts) {
         this.posts = posts;
+    }
+
+    public ArrayList<String> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(ArrayList<String> followers) {
+        this.followers = followers;
+    }
+
+    public ArrayList<String> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(ArrayList<String> following) {
+        this.following = following;
     }
 }

@@ -3,7 +3,6 @@ package com.example.mongoose_java.database.schemaKeys;
 public enum PostKeys {
 
     ID("_id"),
-    TITLE("title"),
     DESCRIPTION("description"),
     DATE_CREATED("dateCreated"),
     LIKES("likes"),
@@ -15,7 +14,7 @@ public enum PostKeys {
         this.text = text;
     }
 
-    public String getText() {
+    public String toText() {
         return text;
     }
 }

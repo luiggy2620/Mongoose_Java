@@ -16,20 +16,22 @@ public class PostComponent {
     private HBox likesContainer;
     private Button likeButton;
     private PostElements elements;
+    private String idPost;
     private String idUser;
 
-    public PostComponent(String idUser) {
+    public PostComponent(String idPost, String idUser) {
+        this.idPost = idPost;
         this.idUser = idUser;
-        elements = new PostElements(idUser);
+        elements = new PostElements();
     }
 
     public VBox getPostComponent(Document post, boolean isLiked) {
         postComponent = elements.postContainerFX();
         postComponent.getChildren().addAll(
-            getUserContainer(String.valueOf(post.get(PostKeys.TITLE.getText()))),
-            elements.descriptionFX(String.valueOf(post.get(PostKeys.DESCRIPTION.getText()))),
-            elements.dateCreatedFX((Date) post.get(PostKeys.DATE_CREATED.getText())),
-            getLikesContainer(isLiked, String.valueOf(post.get(PostKeys.LIKES.getText())))
+            getUserContainer("User Name"),
+            elements.descriptionFX(String.valueOf(post.get(PostKeys.DESCRIPTION.toText()))),
+            elements.dateCreatedFX((Date) post.get(PostKeys.DATE_CREATED.toText())),
+            getLikesContainer(isLiked, String.valueOf(post.get(PostKeys.LIKES.toText())))
         );
 
         addFunctionToUserContainer();
@@ -65,7 +67,7 @@ public class PostComponent {
 
     private void addFunctionToLikeButton() {
         likeButton.setOnMouseClicked(event -> {
-            System.out.println(idUser);
+            System.out.println(idPost);
         });
     }
 }

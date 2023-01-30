@@ -18,17 +18,10 @@ import java.util.Locale;
 
 public class PostElements {
 
-    private String idUser;
-
-    public PostElements(String idUser) {
-        this.idUser = idUser;
-    }
-
     public VBox postContainerFX() {
         VBox postContainerFX = new VBox();
         postContainerFX.setPrefWidth(550);
         postContainerFX.setPrefHeight(150);
-        postContainerFX.setId(idUser);
 
         postContainerFX.getStyleClass().add("postContainer");
         return postContainerFX;
@@ -69,7 +62,8 @@ public class PostElements {
 
     public Label descriptionFX(String description) {
         Label descriptionFX = new Label(description);
-        descriptionFX.setWrapText(true);
+        descriptionFX.setPrefWidth(Double.MAX_VALUE);
+        descriptionFX.setPrefHeight(300);
         descriptionFX.setAlignment(Pos.CENTER_LEFT);
 
         descriptionFX.getStyleClass().addAll("child", "description");
@@ -113,7 +107,6 @@ public class PostElements {
             throw new RuntimeException(e);
         }
 
-        likeButtonFX.setId(idUser);
         likeButtonFX.getStyleClass().addAll("child", "likeButton");
         return likeButtonFX;
     }

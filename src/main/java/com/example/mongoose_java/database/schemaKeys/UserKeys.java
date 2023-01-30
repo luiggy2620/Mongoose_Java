@@ -8,7 +8,9 @@ public enum UserKeys {
     EMAIL("email"),
     PASSWORD("password"),
     PUBLIC_STATUS("isPublic"),
-    POSTS("posts");
+    POSTS("posts"),
+    FOLLOWERS("followers"),
+    FOLLOWING("following");
 
     private final String text;
 
@@ -16,7 +18,7 @@ public enum UserKeys {
         this.text = text;
     }
 
-    public String getText() {
+    public String toText() {
         return text;
     }
 

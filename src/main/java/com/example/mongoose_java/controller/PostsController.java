@@ -24,8 +24,11 @@ public class PostsController {
         PostOperations postOperations = PostOperations.getPostOperations();
         if (postOperations != null) {
             postOperations.findAll().forEachRemaining(post -> {
-                postComponent = new PostComponent((post.get(PostKeys.ID.getText())).toString());
-                postsFX.add(postComponent.getPostComponent(post, true));
+                postComponent = new PostComponent(
+                        (post.get(PostKeys.ID.toText())).toString(),
+                        (post.get(PostKeys.ID_USER.toText())).toString()
+                );
+                postsFX.add(postComponent.getPostComponent(post, false));
             });
 
             postsContainer.getChildren().addAll(postsFX);

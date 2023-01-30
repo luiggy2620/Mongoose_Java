@@ -37,7 +37,6 @@ public class PostOperations extends Operations implements Get, Put, Delete,
     protected Document getSchema(Object object) {
         Post post = (Post) object;
         return new Document("_id", new ObjectId())
-                .append("title", post.getTitle())
                 .append("description", post.getDescription())
                 .append("dateCreated", post.getDateCreated())
                 .append("likes", post.getLikes())
@@ -49,7 +48,7 @@ public class PostOperations extends Operations implements Get, Put, Delete,
         int i = 0;
 
         for (Object key : keys) {
-            keysString[i] = ((PostKeys) key).getText();
+            keysString[i] = ((PostKeys) key).toText();
             i++;
         }
 
@@ -57,7 +56,7 @@ public class PostOperations extends Operations implements Get, Put, Delete,
     }
 
     private String getKeyText(Object key) {
-        return ((PostKeys) key).getText();
+        return ((PostKeys) key).toText();
     }
 
     @Override

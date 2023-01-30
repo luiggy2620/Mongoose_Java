@@ -4,26 +4,16 @@ import java.util.Date;
 
 public class Post {
 
-    private String title;
     private String description;
     private Date dateCreated;
     private int likes;
     private String idUser;
 
-    public Post(String title, String description, String idUser) {
-        this.title = title;
+    public Post(String description, String idUser) {
         this.description = description;
         this.idUser = idUser;
         this.dateCreated = new Date();
         this.likes = 0;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getDescription() {

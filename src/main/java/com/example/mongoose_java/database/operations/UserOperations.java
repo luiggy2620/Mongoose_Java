@@ -41,7 +41,9 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
                 .append("email", user.getEmail())
                 .append("password", user.getPassword())
                 .append("isPublic", user.isPublic())
-                .append("posts", user.getPosts());
+                .append("posts", user.getPosts())
+                .append("followers", user.getFollowers())
+                .append("following", user.getFollowing());
     }
 
     @Override
@@ -69,7 +71,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
         int i = 0;
 
         for (Object key : keys) {
-            keysString[i] = ((UserKeys)key).getText();
+            keysString[i] = ((UserKeys)key).toText();
             i++;
         }
 
@@ -77,7 +79,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     }
 
     private String getKeyText(Object key) {
-        return ((UserKeys) key).getText();
+        return ((UserKeys) key).toText();
     }
 
     @Override
