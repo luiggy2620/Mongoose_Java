@@ -1,5 +1,7 @@
 package com.example.mongoose_java.model;
 
+import org.bson.types.ObjectId;
+
 import java.util.Date;
 
 public class Post {
@@ -7,9 +9,9 @@ public class Post {
     private String description;
     private Date dateCreated;
     private int likes;
-    private String idUser;
+    private ObjectId idUser;
 
-    public Post(String description, String idUser) {
+    public Post(String description, ObjectId idUser) {
         this.description = description;
         this.idUser = idUser;
         this.dateCreated = new Date();
@@ -40,11 +42,11 @@ public class Post {
         this.likes = likes;
     }
 
-    public String getIdUser() {
+    public ObjectId getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(String idUser) {
+    public void setIdUser(ObjectId idUser) {
         this.idUser = idUser;
     }
 }

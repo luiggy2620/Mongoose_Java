@@ -16,22 +16,30 @@ public class PostsController {
     @FXML private GridPane mainContainer;
     @FXML private VBox menuContainer;
     @FXML private FlowPane postsContainer;
+    private Collection<VBox> postsFX;
+    private PostOperations postOperations;
     private PostComponent postComponent;
 
     public void initialize() {
-        Collection<VBox> postsFX = new ArrayList<>();
+        getPostToDatabase();
+        postsContainer.getChildren().addAll(postsFX);
+    }
 
-        PostOperations postOperations = PostOperations.getPostOperations();
+    private void getPostToDatabase() {
         if (postOperations != null) {
             postOperations.findAll().forEachRemaining(post -> {
                 postComponent = new PostComponent(
                         (post.get(PostKeys.ID.toText())).toString(),
-                        (post.get(PostKeys.ID_USER.toText())).toString()
+                        (post.get(PostKeys.ID_USER.toText())).toString(),
+                        false
                 );
-                postsFX.add(postComponent.getPostComponent(post, false));
+                postsFX.add(postComponent.getPostComponent(post));
             });
 
-            postsContainer.getChildren().addAll(postsFX);
+        } else {
+            postOperations = PostOperations.getPostOperations();
+            postsFX = new ArrayList<>();
+            getPostToDatabase();
         }
     }
 }

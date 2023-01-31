@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class User {
 
     private String name;
-    private String userName;
+    private String username;
     private String email;
     private String password;
     private Boolean isPublic;
@@ -13,9 +13,9 @@ public class User {
     private ArrayList<String> followers;
     private ArrayList<String> following;
 
-    public User(String name, String userName, String email, String password) {
+    public User(String name, String username, String email, String password) {
         this.name = name;
-        this.userName = userName;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.isPublic = true;
@@ -32,12 +32,12 @@ public class User {
         this.name = name;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

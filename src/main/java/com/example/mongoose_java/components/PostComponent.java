@@ -1,6 +1,7 @@
 package com.example.mongoose_java.components;
 
 import com.example.mongoose_java.database.schemaKeys.PostKeys;
+import com.example.mongoose_java.database.schemaKeys.UserKeys;
 import com.example.mongoose_java.elements.PostElements;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -18,17 +19,19 @@ public class PostComponent {
     private PostElements elements;
     private String idPost;
     private String idUser;
+    private boolean isLiked;
 
-    public PostComponent(String idPost, String idUser) {
+    public PostComponent(String idPost, String idUser, boolean isLiked) {
         this.idPost = idPost;
         this.idUser = idUser;
+        this.isLiked = isLiked;
         elements = new PostElements();
     }
 
-    public VBox getPostComponent(Document post, boolean isLiked) {
+    public VBox getPostComponent(Document post) {
         postComponent = elements.postContainerFX();
         postComponent.getChildren().addAll(
-            getUserContainer("User Name"),
+            getUserContainer(String.valueOf(post.get(UserKeys.USERNAME.toText()))),
             elements.descriptionFX(String.valueOf(post.get(PostKeys.DESCRIPTION.toText()))),
             elements.dateCreatedFX((Date) post.get(PostKeys.DATE_CREATED.toText())),
             getLikesContainer(isLiked, String.valueOf(post.get(PostKeys.LIKES.toText())))

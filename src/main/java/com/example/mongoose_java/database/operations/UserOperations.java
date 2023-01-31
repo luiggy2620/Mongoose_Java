@@ -37,7 +37,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
         User user = (User) object;
         return new Document("_id", new ObjectId())
                 .append("name", user.getName())
-                .append("userName", user.getUserName())
+                .append("username", user.getUsername())
                 .append("email", user.getEmail())
                 .append("password", user.getPassword())
                 .append("isPublic", user.isPublic())

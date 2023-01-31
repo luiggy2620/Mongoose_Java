@@ -4,7 +4,7 @@ public enum UserKeys {
 
     ID("_id"),
     NAME("name"),
-    USERNAME("userName"),
+    USERNAME("username"),
     EMAIL("email"),
     PASSWORD("password"),
     PUBLIC_STATUS("isPublic"),

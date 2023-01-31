@@ -4,9 +4,7 @@ import com.example.mongoose_java.database.CRUD.*;
 import com.example.mongoose_java.database.schemaKeys.PostKeys;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Sorts;
-import com.mongodb.client.model.Updates;
+import com.mongodb.client.model.*;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -14,6 +12,8 @@ import com.example.mongoose_java.model.Post;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PostOperations extends Operations implements Get, Put, Delete,
         com.example.mongoose_java.database.CRUD.Post {
@@ -62,7 +62,23 @@ public class PostOperations extends Operations implements Get, Put, Delete,
     @Override
     public MongoCursor<Document> findAll() {
         try {
-            posts = getPostsCollection().find().iterator();
+            List<Bson> pipeline = Arrays.asList(
+                    Aggregates.lookup("users", "idUser", "_id", "user"),
+                    Aggregates.unwind("$user"),
+                    Aggregates.project(Projections.fields(
+                            Projections.include(
+                                    "_id",
+                                    "description",
+                                    "dateCreated",
+                                    "likes",
+                                    "idUser"),
+                            Projections.computed(
+                                    "username", "$user.username"
+                            )
+                    ))
+            );
+
+            posts = getPostsCollection().aggregate(pipeline).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
         }

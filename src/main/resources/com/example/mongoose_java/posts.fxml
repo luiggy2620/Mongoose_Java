@@ -22,7 +22,7 @@
       <VBox fx:id="menuContainer" prefHeight="200.0" prefWidth="100.0" />
       <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" styleClass="scrollBar">
          <content>
-            <FlowPane fx:id="postsContainer" prefHeight="100.0" prefWidth="798.0" hgap="30" vgap="30"/>
+            <FlowPane fx:id="postsContainer" prefHeight="100.0" prefWidth="798.0" hgap="25" vgap="25"/>
          </content>
       </ScrollPane>
    </children>
