@@ -2,6 +2,7 @@ package com.example.mongoose_java.database.operations;
 
 import com.example.mongoose_java.database.CRUD.*;
 import com.example.mongoose_java.database.schemaKeys.PostKeys;
+import com.example.mongoose_java.database.schemaKeys.Schemaable;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.*;
@@ -56,28 +57,50 @@ public class PostOperations extends Operations implements Get, Put, Delete,
     }
 
     private String getKeyText(Object key) {
-        return ((PostKeys) key).toText();
+        return ((Schemaable) key).toText();
+    }
+
+    private List<Bson> getPipeline() {
+        return Arrays.asList(
+                Aggregates.lookup("users", "idUser", "_id", "user"),
+                Aggregates.unwind("$user"),
+                Aggregates.project(Projections.fields(
+                        Projections.include(
+                                "_id",
+                                "description",
+                                "dateCreated",
+                                "likes",
+                                "idUser"),
+                        Projections.computed(
+                                "username", "$user.username"
+                        )
+                ))
+        );
+    }
+
+    private List<Bson> getPipelineWithFilter(Bson filter) {
+        return Arrays.asList(
+                Aggregates.lookup("users", "idUser", "_id", "user"),
+                Aggregates.unwind("$user"),
+                Aggregates.project(Projections.fields(
+                        Projections.include(
+                                "_id",
+                                "description",
+                                "dateCreated",
+                                "likes",
+                                "idUser"),
+                        Projections.computed(
+                                "username", "$user.username"
+                        )
+                )),
+                Aggregates.match(filter)
+        );
     }
 
     @Override
     public MongoCursor<Document> findAll() {
         try {
-            List<Bson> pipeline = Arrays.asList(
-                    Aggregates.lookup("users", "idUser", "_id", "user"),
-                    Aggregates.unwind("$user"),
-                    Aggregates.project(Projections.fields(
-                            Projections.include(
-                                    "_id",
-                                    "description",
-                                    "dateCreated",
-                                    "likes",
-                                    "idUser"),
-                            Projections.computed(
-                                    "username", "$user.username"
-                            )
-                    ))
-            );
-
+            List<Bson> pipeline = getPipeline();
             posts = getPostsCollection().aggregate(pipeline).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
@@ -89,7 +112,8 @@ public class PostOperations extends Operations implements Get, Put, Delete,
     public MongoCursor<Document> findBy(Object key, Object value) {
         try {
             Bson filter = Filters.eq(getKeyText(key), value);
-            posts = getPostsCollection().find(filter).iterator();
+            List<Bson> pipeline = getPipelineWithFilter(filter);
+            posts = getPostsCollection().aggregate(pipeline).iterator();
         } catch (MongoException exception) {
             System.out.println(exception);
         }

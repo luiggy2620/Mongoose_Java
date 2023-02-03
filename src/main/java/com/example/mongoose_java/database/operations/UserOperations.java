@@ -1,6 +1,7 @@
 package com.example.mongoose_java.database.operations;
 
 import com.example.mongoose_java.database.CRUD.*;
+import com.example.mongoose_java.database.schemaKeys.Schemaable;
 import com.example.mongoose_java.database.schemaKeys.UserKeys;
 import com.example.mongoose_java.model.User;
 import com.mongodb.MongoException;
@@ -79,7 +80,7 @@ public class UserOperations extends Operations implements Get, Post, Put, Delete
     }
 
     private String getKeyText(Object key) {
-        return ((UserKeys) key).toText();
+        return ((Schemaable) key).toText();
     }
 
     @Override

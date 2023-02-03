@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -20,9 +23,17 @@
 
    <children>
       <VBox fx:id="menuContainer" prefHeight="200.0" prefWidth="100.0" />
-      <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" styleClass="scrollBar">
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" styleClass="scrollBar" GridPane.columnIndex="1">
          <content>
-            <FlowPane fx:id="postsContainer" prefHeight="100.0" prefWidth="798.0" hgap="25" vgap="25"/>
+            <FlowPane fx:id="postsContainer" hgap="25" prefHeight="100.0" prefWidth="798.0" vgap="25">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <TextField fx:id="toSearchInput" prefWidth="300.0" promptText="search by username" style="-fx-border-color: #333; -fx-border-width: 2px;" />
+                        <Button maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#searchByUsername" style="-fx-background-color: #333; -fx-text-fill: #FFF; -fx-border-width: 2px;" text="Search" />
+                     </children>
+                  </HBox>
+               </children></FlowPane>
          </content>
       </ScrollPane>
    </children>

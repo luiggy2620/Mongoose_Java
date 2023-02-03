@@ -1,6 +1,6 @@
 package com.example.mongoose_java.database.schemaKeys;
 
-public enum UserKeys {
+public enum UserKeys implements Schemaable{
 
     ID("_id"),
     NAME("name"),
@@ -18,6 +18,7 @@ public enum UserKeys {
         this.text = text;
     }
 
+    @Override
     public String toText() {
         return text;
     }

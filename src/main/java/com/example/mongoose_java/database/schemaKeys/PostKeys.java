@@ -1,6 +1,6 @@
 package com.example.mongoose_java.database.schemaKeys;
 
-public enum PostKeys {
+public enum PostKeys implements Schemaable{
 
     ID("_id"),
     DESCRIPTION("description"),
@@ -14,6 +14,7 @@ public enum PostKeys {
         this.text = text;
     }
 
+    @Override
     public String toText() {
         return text;
     }
